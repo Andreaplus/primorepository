@@ -23,6 +23,37 @@ Point.prototype.translate = function(dx, dy) {
 };
 
 
+Point.prototype.pointMembership = function(equation) {
+  var value = equation(this.x, this.y);
+
+  if (value > 0) {
+    return 1;
+  }
+
+  if (value < 0) {
+    return -1;
+  }
+
+  return 0;
+}
+
+Point.prototype.distance = function(line) {
+  var module = Math.abs(line.a*this.x+line.b*this.y+line.c);
+  var sqrt = Math.sqrt(Math,pow(line.a)+Math.pow(line.b));
+  return module/sqrt;
+};
+
+var Line = function (a, b, c) {
+  //comodo se l'utente si dimentica di usare new
+  if(!(this instanceof Line)) {
+    return new Line(a, b, c);
+  }
+
+  this.a = a;
+  this.b = b;
+  this.c = c;
+}
+
 /* TRIANGLE */
 
 var Triangle = function (p1, p2, p3) {
