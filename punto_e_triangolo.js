@@ -38,8 +38,10 @@ Point.prototype.pointMembership = function(equation) {
 }
 
 Point.prototype.distance = function(line) {
+
   var module = Math.abs(line.a*this.x+line.b*this.y+line.c);
-  var sqrt = Math.sqrt(Math,pow(line.a)+Math.pow(line.b));
+  var sqrt = Math.sqrt(Math.pow(line.a, 2)+Math.pow(line.b, 2));
+
   return module/sqrt;
 };
 
