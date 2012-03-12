@@ -1,4 +1,6 @@
 /* randomPoints */
+!(function (exports) {
+
 
 var sqrt = Math.sqrt;
 var pow = Math.pow;
@@ -6,7 +8,7 @@ var random = Math.random;
 
 /* POINT */
 
-var Point = function (x, y) {
+exports.Point = function (x, y) {
   this.x = x || 0;
   this.y = y || 0;
 }
@@ -57,7 +59,7 @@ Point.prototype.getDistance = function(x) {
   throw new Error('x is not a Point nor a Line');
 };
 
-var Line = function (a, b, c) {
+exports.Line = function (a, b, c) {
   //comodo se l'utente si dimentica di usare new
   if(!(this instanceof Line)) {
     return new Line(a, b, c);
@@ -70,10 +72,12 @@ var Line = function (a, b, c) {
 
 /* TRIANGLE */
 
-var Triangle = function (p1, p2, p3) {
-  this.p1 = p1;
+exports.Triangle = function (p1, p2, p3) {
+
+  this.points = [p1, p2, p3];
+/*  this.p1 = p1;
   this.p2 = p2;
-  this.p3 = p3;
+  this.p3 = p3;*/
 
   this.l1 = p2.getDistance(p3);
   this.l2 = p3.getDistance(p1);
@@ -92,46 +96,56 @@ Triangle.prototype.getArea = function() {
 
 Triangle.prototype.above = function(line) {
 
-  var bool_1 = this.p1.pointMembership(line);
+  return this.points.every(function (point) {
+    return point.getDistance > 0;
+  })
+
+/*  var bool_1 = this.p1.pointMembership(line);
   var bool_2 = this.p2.pointMembership(line);
   var bool_3 = this.p3.pointMembership(line);
 
   if(bool_1+bool_2+bool_3 === 3)
     return +1;
-  else return -1;
+  else return -1;*/
 };
 
 Triangle.prototype.below = function(line) {
 
-  var bool_1 = this.p1.pointMembership(line);
+  return this.points.every(function (point) {
+    return point.getDistance < 0;
+  })
+
+/*  var bool_1 = this.p1.pointMembership(line);
   var bool_2 = this.p2.pointMembership(line);
   var bool_3 = this.p3.pointMembership(line);
 
   if(bool_1+bool_2+bool_3 === -3)
     return +1;
-  else return -1;
+  else return -1;*/
 };
 
 Triangle.prototype.intersect = function(line) {
 
-  var bool_1 = this.p1.pointMembership(line);
+  return (this.above(line) || this.below.line)) ? false : true;
+
+/*  var bool_1 = this.p1.pointMembership(line);
   var bool_2 = this.p2.pointMembership(line);
   var bool_3 = this.p3.pointMembership(line);
 
   if(bool_1+bool_2+bool_3 !== 3) && (bool_1+bool_2+bool_3 !== -3)
     return +1;
-  else return -1;
+  else return -1;*/
 };
 
 
-var randomPoint = function () {
+exports.randomPoint = function () {
   var x1 = random() * 200 - 100;
   var y1 = random() * 200 - 100;
   
   return new Point(x1, y1);
 };
 
-var randomPoints = function (n) {
+exports.randomPoints = function (n) {
   var n = n || 1;
   var res = new Array(n);
 
@@ -148,8 +162,21 @@ function SemipianoPositivo(point) {
 	return point.x < point.y;
 }
 
-function FiltraSemipianoPositivo(array) {
+exports.FiltraSemipianoPositivo = function(array) {
 	return array.filter(function(point) {
 		return SemipianoPositivo(point);
 	});
 }
+
+exports.Quad = function (p1, p2, p3, p4) {
+  this.points = [p1, p2, p3, p4];
+};
+
+Quad.prototype.above = Triangle.prototype.above;
+
+Quad.prototype.below = Triangle.prototype.below;
+
+Quad.prototype.intersect = Triangle.prototype.intersect;
+
+
+}(this))
