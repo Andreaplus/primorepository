@@ -11,7 +11,7 @@ var Point = function (x, y) {
   this.y = y || 0;
 }
 
-Point.prototype.getDistance = function(point) {
+Point.prototype.getDistanceFromPoint = function(point) {
   return sqrt(pow(point.y - this.y, 2) + pow(point.x - this.y, 2));
 };
 
@@ -37,12 +37,24 @@ Point.prototype.pointMembership = function(equation) {
   return 0;
 }
 
-Point.prototype.distance = function(line) {
+Point.prototype.getDistanceFromLine = function(line) {
 
-  var module = Math.abs(line.a*this.x+line.b*this.y+line.c);
+  var module = line.a*this.x+line.b*this.y+line.c;
   var sqrt = Math.sqrt(Math.pow(line.a, 2)+Math.pow(line.b, 2));
 
   return module/sqrt;
+};
+
+Point.prototype.getDistance = function(x) {
+  if(x instanceof Point) {
+    return this.getDistanceFromPoint(x);
+  }
+
+  if(x instanceof Line) {
+    return this.getDistanceFromLine(x);
+  }
+
+  throw new Error('x is not a Point nor a Line');
 };
 
 var Line = function (a, b, c) {
@@ -76,6 +88,39 @@ Triangle.prototype.getArea = function() {
   var p = this.getPerimeter() / 2;
 
   return sqrt(p*(p - this.l1)*(p - this.l2)*(p - this.l3));
+};
+
+Triangle.prototype.above = function(line) {
+
+  var bool_1 = this.p1.pointMembership(line);
+  var bool_2 = this.p2.pointMembership(line);
+  var bool_3 = this.p3.pointMembership(line);
+
+  if(bool_1+bool_2+bool_3 === 3)
+    return +1;
+  else return -1;
+};
+
+Triangle.prototype.below = function(line) {
+
+  var bool_1 = this.p1.pointMembership(line);
+  var bool_2 = this.p2.pointMembership(line);
+  var bool_3 = this.p3.pointMembership(line);
+
+  if(bool_1+bool_2+bool_3 === -3)
+    return +1;
+  else return -1;
+};
+
+Triangle.prototype.intersect = function(line) {
+
+  var bool_1 = this.p1.pointMembership(line);
+  var bool_2 = this.p2.pointMembership(line);
+  var bool_3 = this.p3.pointMembership(line);
+
+  if(bool_1+bool_2+bool_3 !== 3) && (bool_1+bool_2+bool_3 !== -3)
+    return +1;
+  else return -1;
 };
 
 
